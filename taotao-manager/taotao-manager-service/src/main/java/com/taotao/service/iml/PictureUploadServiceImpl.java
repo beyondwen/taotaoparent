@@ -30,8 +30,8 @@ public class PictureUploadServiceImpl implements PictureUploadService {
     private String imageBaseUrl;
 
 
-    public Map uploadPicture(MultipartFile uploadFile) {
-        Map<String, Object> resultMap = new HashMap(2);
+    public Map<String, Object> uploadPicture(MultipartFile uploadFile) {
+        Map<String, Object> resultMap = new HashMap<String, Object>(2);
         try {
             String oldName = uploadFile.getOriginalFilename();
             String newName = IDUtils.genImageName();
