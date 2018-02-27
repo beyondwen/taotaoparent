@@ -1,14 +1,12 @@
 package com.taotao.controller;
 
 import com.taotao.common.pojo.TaotaoResult;
+import com.taotao.pojo.EasyUIResult;
 import com.taotao.pojo.TbItemParam;
 import com.taotao.service.ItemParamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/item/param")
@@ -31,5 +29,13 @@ public class ItemParamController {
         param.setParamData(paramData);
         TaotaoResult taotaoResult = itemParamService.insertItemParam(param);
         return taotaoResult;
+    }
+
+    @RequestMapping("/list")
+    //设置相应的内容为json数据
+    @ResponseBody
+    public EasyUIResult getItemParamlist(@RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "30") Integer rows) {
+        //查询商品列表
+        return itemParamService.getItemParamList(page, rows);
     }
 }

@@ -1,7 +1,11 @@
 package com.taotao.service.iml;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.taotao.common.pojo.TaotaoResult;
 import com.taotao.mapper.TbItemParamMapper;
+import com.taotao.pojo.EasyUIResult;
+import com.taotao.pojo.TbItem;
 import com.taotao.pojo.TbItemParam;
 import com.taotao.pojo.TbItemParamExample;
 import com.taotao.pojo.TbItemParamExample.Criteria;
@@ -37,5 +41,18 @@ public class ItemParamServiceImpl implements ItemParamService {
         itemParam.setUpdated(new Date());
         itemParamMapper.insert(itemParam);
         return TaotaoResult.ok();
+    }
+
+    public EasyUIResult getItemParamList(Integer page, Integer rows) {
+        TbItemParamExample example = new TbItemParamExample();
+        //设置分页
+        PageHelper.startPage(page, rows);
+        Criteria criteria = example.createCriteria();
+        List<TbItemParam> list = itemParamMapper.selectByExampleWithBLOBs(example);
+        //取分页信息
+        PageInfo<TbItemParam> pageInfo = new PageInfo<TbItemParam>(list);
+        long total = pageInfo.getTotal();
+        EasyUIResult result = new EasyUIResult(total, list);
+        return result;
     }
 }
