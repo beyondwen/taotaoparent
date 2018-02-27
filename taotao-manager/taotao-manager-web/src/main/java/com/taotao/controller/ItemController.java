@@ -25,8 +25,7 @@ public class ItemController {
     @RequestMapping("/list")
     //设置相应的内容为json数据
     @ResponseBody
-    public EasyUIResult getItemlist(@RequestParam(defaultValue = "1") Integer page,
-                                    @RequestParam(defaultValue = "30") Integer rows) {
+    public EasyUIResult getItemlist(@RequestParam(defaultValue = "1") Integer page,@RequestParam(defaultValue = "30") Integer rows) {
         //查询商品列表
         return itemService.getItemList(page, rows);
     }
@@ -39,7 +38,7 @@ public class ItemController {
      */
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     @ResponseBody
-    public TaotaoResult createItem(TbItem item,String desc) throws Exception{
-        return itemService.createItem(item,desc);
+    public TaotaoResult createItem(TbItem item,String desc,String itemParams) throws Exception{
+        return itemService.createItem(item,desc,itemParams);
     }
 }

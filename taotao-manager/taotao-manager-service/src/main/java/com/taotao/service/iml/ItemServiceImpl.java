@@ -6,10 +6,8 @@ import com.taotao.common.pojo.TaotaoResult;
 import com.taotao.common.utils.IDUtils;
 import com.taotao.mapper.TbItemDescMapper;
 import com.taotao.mapper.TbItemMapper;
-import com.taotao.pojo.EasyUIResult;
-import com.taotao.pojo.TbItem;
-import com.taotao.pojo.TbItemDesc;
-import com.taotao.pojo.TbItemExample;
+import com.taotao.mapper.TbItemParamItemMapper;
+import com.taotao.pojo.*;
 import com.taotao.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +24,9 @@ public class ItemServiceImpl implements ItemService {
     @Autowired
     private TbItemDescMapper tbItemDescMapper;
 
+    @Autowired
+    private TbItemParamItemMapper itemParamItemMapper;
+
     public TbItem getItemById(long itemId) {
         return tbItemMapper.selectByPrimaryKey(itemId);
     }
@@ -39,11 +40,10 @@ public class ItemServiceImpl implements ItemService {
         PageInfo<TbItem> pageInfo = new PageInfo<TbItem>(list);
         long total = pageInfo.getTotal();
         EasyUIResult result = new EasyUIResult(total, list);
-
         return result;
     }
 
-    public TaotaoResult createItem(TbItem item, String desc) throws Exception{
+    public TaotaoResult createItem(TbItem item, String desc, String itemParam) throws Exception {
         long id = IDUtils.genItemId();
         item.setId(id);
         item.setStatus((byte) 1);
@@ -54,16 +54,33 @@ public class ItemServiceImpl implements ItemService {
         if (result.getStatus() != 200) {
             throw new Exception();
         }
+        result = insertItemParamItem(id, itemParam);
+        if (result.getStatus() != 200) {
+            throw new Exception();
+        }
         return TaotaoResult.ok();
     }
 
-    public TaotaoResult insertItemDesc(Long itemId, String desc) {
+    private TaotaoResult insertItemDesc(Long itemId, String desc) {
         TbItemDesc tbItemDesc = new TbItemDesc();
         tbItemDesc.setItemId(itemId);
         tbItemDesc.setItemDesc(desc);
         tbItemDesc.setCreated(new Date());
         tbItemDesc.setUpdated(new Date());
         tbItemDescMapper.insert(tbItemDesc);
+        return TaotaoResult.ok();
+    }
+
+
+    private TaotaoResult insertItemParamItem(long itemId, String itemParam) {
+        //创建一个pojo
+        TbItemParamItem itemParamItem = new TbItemParamItem();
+        itemParamItem.setItemId(itemId);
+        itemParamItem.setParamData(itemParam);
+        itemParamItem.setCreated(new Date());
+        itemParamItem.setUpdated(new Date());
+        //向表中插入数据
+        itemParamItemMapper.insert(itemParamItem);
         return TaotaoResult.ok();
     }
 }
