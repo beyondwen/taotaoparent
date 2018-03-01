@@ -27,13 +27,19 @@ public class ContentCategoryController {
 
     @RequestMapping("/create")
     @ResponseBody
-    public TaotaoResult createContentCategory(Long parentId, String name) {
+    public TaotaoResult create(Long parentId, String name) {
         return contentCategoryService.insertContentCategory(parentId, name);
     }
 
     @RequestMapping("/delete")
     @ResponseBody
-    public TaotaoResult deleteContentCategory(long id) {
+    public TaotaoResult delete(long id) {
         return contentCategoryService.deleteContentCategory(id);
+    }
+
+    @RequestMapping("/update")
+    @ResponseBody
+    public TaotaoResult update(long id, String name) {
+        return contentCategoryService.updateContentCategory(id, name);
     }
 }

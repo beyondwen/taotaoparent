@@ -65,28 +65,46 @@ public class ContentCategoryServiceImpl implements ContentCategoryService {
     }
 
     public TaotaoResult deleteContentCategory(long id) {
+        //根据id查询TbContentCategory
         TbContentCategory contentCategory = contentCategoryMapper.selectByPrimaryKey(id);
+        //判断是否是父节点
         if (contentCategory.getIsParent()) {
             TbContentCategoryExample example = new TbContentCategoryExample();
             TbContentCategoryExample.Criteria criteria = example.createCriteria();
             criteria.andParentIdEqualTo(id);
+            //通过父id查询子节点
             List<TbContentCategory> tbContentCategories = contentCategoryMapper.selectByExample(example);
             for (TbContentCategory tbContentCategory : tbContentCategories) {
+                //删除子节点
                 contentCategoryMapper.deleteByPrimaryKey(tbContentCategory.getId());
             }
+            //删除自己
             contentCategoryMapper.deleteByPrimaryKey(contentCategory.getId());
         } else {
+            //如果不是父节点
             contentCategoryMapper.deleteByPrimaryKey(id);
             TbContentCategoryExample example = new TbContentCategoryExample();
             TbContentCategoryExample.Criteria criteria = example.createCriteria();
             criteria.andParentIdEqualTo(contentCategory.getParentId());
+            //查询父id下是否有其他子节点
             List<TbContentCategory> tbContentCategories = contentCategoryMapper.selectByExample(example);
+            //如果没有
             if (tbContentCategories.isEmpty()) {
                 TbContentCategory tbContentCategory = contentCategoryMapper.selectByPrimaryKey(contentCategory.getParentId());
+                //设置自己不是父节点
                 tbContentCategory.setIsParent(false);
+                //进行更新
                 contentCategoryMapper.updateByPrimaryKey(tbContentCategory);
             }
         }
+        return TaotaoResult.ok();
+    }
+
+    public TaotaoResult updateContentCategory(long id, String name) {
+        TbContentCategory contentCategory = new TbContentCategory();
+        contentCategory.setId(id);
+        contentCategory.setName(name);
+        contentCategoryMapper.updateByPrimaryKeySelective(contentCategory);
         return TaotaoResult.ok();
     }
 }
