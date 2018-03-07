@@ -32,6 +32,18 @@ public class ContentController {
         return contentService.insertContent(content);
     }
 
+    @RequestMapping("/edit")
+    @ResponseBody
+    public TaotaoResult editContent(TbContent content) {
+        return contentService.editContent(content);
+    }
+
+    @RequestMapping("/delete")
+    @ResponseBody
+    public TaotaoResult deleteContent(String ids) {
+        return contentService.deleteContent(ids);
+    }
+
     @RequestMapping("/list/{contentCategoryId}")
     @ResponseBody
     public TaotaoResult getContentList(@PathVariable Long contentCategoryId) {

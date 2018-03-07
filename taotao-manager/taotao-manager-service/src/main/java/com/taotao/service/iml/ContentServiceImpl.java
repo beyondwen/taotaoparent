@@ -50,4 +50,19 @@ public class ContentServiceImpl implements ContentService {
         List<TbContent> list = tbContentMapper.selectByExample(example);
         return list;
     }
+
+    public TaotaoResult editContent(TbContent content) {
+        content.setUpdated(new Date());
+        tbContentMapper.updateByPrimaryKeySelective(content);
+        return TaotaoResult.ok();
+    }
+
+    public TaotaoResult deleteContent(String ids) {
+        String[] splitId = ids.split(",");
+        for (String id : splitId) {
+            Long lId = Long.valueOf(id);
+            tbContentMapper.deleteByPrimaryKey(lId);
+        }
+        return TaotaoResult.ok();
+    }
 }
